@@ -23,6 +23,7 @@ import { HudSystem } from '@/systems/HudSystem';
 import { BossPhaseSystem } from '@/systems/BossPhaseSystem';
 import { createPlayer } from '@/prefabs/createPlayer';
 import { GameOverScene } from './GameOverScene';
+import { GameClearScene } from './GameClearScene';
 
 export class GameScene implements Scene {
   container = new Container();
@@ -31,6 +32,7 @@ export class GameScene implements Scene {
   private tickerFn?: (ticker: any) => void;
   private lives = CONFIG.PLAYER_LIVES;
   private bombHandler?: (e: KeyboardEvent) => void;
+  private sceneEnding = false;
 
   init(app: Application, game: Game): void {
     this.game = game;
@@ -81,6 +83,16 @@ export class GameScene implements Scene {
       hudSystem.showWave(wave);
     };
 
+    waveSystem.onAllWavesComplete = () => {
+      if (this.sceneEnding) return;
+      this.sceneEnding = true;
+      const player = world.queryFirst(PlayerTag);
+      const score = player?.getComponent<PlayerTag>(PlayerTag)?.score ?? 0;
+      setTimeout(() => {
+        game.switchScene(new GameClearScene(score));
+      }, 1000);
+    };
+
     damageSystem.onEnemyKilled = (x: number, y: number, score: number) => {
       const player = world.queryFirst(PlayerTag);
       if (player) {
@@ -94,6 +106,8 @@ export class GameScene implements Scene {
       this.lives--;
       hudSystem.setLives(this.lives);
       if (this.lives <= 0) {
+        if (this.sceneEnding) return;
+        this.sceneEnding = true;
         const player = world.queryFirst(PlayerTag);
         const score = player?.getComponent<PlayerTag>(PlayerTag)?.score ?? 0;
         setTimeout(() => {
