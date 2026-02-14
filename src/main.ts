@@ -1,24 +1,17 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { Application } from 'pixi.js';
+import { CONFIG } from './game/config';
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+async function bootstrap() {
+  const app = new Application();
+  await app.init({
+    width: CONFIG.GAME_WIDTH,
+    height: CONFIG.GAME_HEIGHT,
+    background: CONFIG.BACKGROUND_COLOR,
+    antialias: true,
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true,
+  });
+  document.body.appendChild(app.canvas);
+}
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+bootstrap();
