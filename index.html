@@ -3,14 +3,169 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>弹幕射击</title>
+  <title>NEON BARRAGE | 霓虹弹幕</title>
+  
+  <!-- Google Fonts: Orbitron for display, Rajdhani for UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    canvas { display: block; }
+    :root {
+      /* Core neon palette */
+      --neon-cyan: #00fff2;
+      --neon-pink: #ff2d95;
+      --neon-purple: #b829ff;
+      --neon-yellow: #ffe600;
+      --neon-orange: #ff6b2d;
+      --neon-blue: #2d7aff;
+      
+      /* Background depths */
+      --bg-void: #050510;
+      --bg-deep: #0a0a1a;
+      --bg-mid: #12122a;
+      --bg-surface: #1a1a3a;
+      
+      /* Text hierarchy */
+      --text-bright: #ffffff;
+      --text-dim: #8888aa;
+      --text-muted: #555577;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    body {
+      background: var(--bg-void);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Rajdhani', sans-serif;
+      
+      /* Animated gradient background */
+      background-image: 
+        radial-gradient(ellipse at 20% 80%, rgba(184, 41, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(0, 255, 242, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 45, 149, 0.05) 0%, transparent 70%);
+      background-size: 200% 200%;
+      animation: bgPulse 15s ease-in-out infinite;
+    }
+    
+    @keyframes bgPulse {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    /* Game container with glow effect */
+    #game-wrapper {
+      position: relative;
+      border-radius: 4px;
+      box-shadow: 
+        0 0 60px rgba(0, 255, 242, 0.2),
+        0 0 120px rgba(184, 41, 255, 0.1),
+        inset 0 0 60px rgba(0, 0, 0, 0.5);
+    }
+    
+    #game-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+      z-index: -1;
+      opacity: 0.6;
+      animation: borderGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes borderGlow {
+      0% { opacity: 0.4; filter: blur(2px); }
+      100% { opacity: 0.8; filter: blur(4px); }
+    }
+    
+    canvas {
+      display: block;
+      border-radius: 4px;
+    }
+    
+    /* Loading screen */
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg-void);
+      z-index: 1000;
+      transition: opacity 0.5s ease-out;
+    }
+    
+    #loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    #loading h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 2.5rem;
+      letter-spacing: 0.3em;
+      color: var(--neon-cyan);
+      text-shadow: 
+        0 0 10px var(--neon-cyan),
+        0 0 30px var(--neon-cyan),
+        0 0 60px var(--neon-cyan);
+      margin-bottom: 2rem;
+      animation: titlePulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes titlePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.02); }
+    }
+    
+    .loader {
+      width: 60px;
+      height: 60px;
+      border: 3px solid transparent;
+      border-top-color: var(--neon-cyan);
+      border-right-color: var(--neon-purple);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    #loading p {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
-  <script type="module" src="/src/main.ts"></script>
+  <div id="loading">
+    <h1>NEON BARRAGE</h1>
+    <div class="loader"></div>
+    <p>Initializing</p>
+  </div>
+  
+  <div id="game-wrapper">
+    <script type="module" src="/src/main.ts"></script>
+  </div>
 </body>
 </html>

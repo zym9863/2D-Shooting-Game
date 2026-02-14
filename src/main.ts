@@ -13,7 +13,18 @@ async function bootstrap() {
     resolution: window.devicePixelRatio || 1,
     autoDensity: true,
   });
-  document.body.appendChild(app.canvas);
+  
+  const wrapper = document.getElementById('game-wrapper');
+  if (wrapper) {
+    wrapper.appendChild(app.canvas);
+  }
+  
+  // Hide loading screen with fade effect
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.classList.add('hidden');
+    setTimeout(() => loading.remove(), 500);
+  }
 
   const game = new Game(app);
   game.switchScene(new TitleScene());
