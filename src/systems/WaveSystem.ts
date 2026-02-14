@@ -3,6 +3,8 @@ import { EnemyTag } from '@/components';
 import { WAVES, WaveSpawn } from '@/data/waves';
 import { ENEMY_DEFS } from '@/data/enemies';
 import { createEnemy } from '@/prefabs/createEnemy';
+import { createBoss } from '@/prefabs/createBoss';
+import { MID_BOSS, FINAL_BOSS } from '@/data/bosses';
 import { createPowerUp } from '@/prefabs/createPowerUp';
 import { randomRange } from '@/utils/math';
 import type { PowerUpType } from '@/components';
@@ -82,9 +84,10 @@ export class WaveSystem extends System {
 
       if (this.elapsed >= timer.nextSpawnAt) {
         const x = randomRange(timer.spawn.xRange[0], timer.spawn.xRange[1]);
-        // Boss spawns will be handled later in Task 20-21
-        // For now, only spawn regular enemies
-        if (!timer.spawn.isBoss) {
+        if (timer.spawn.isBoss) {
+          const bossDef = timer.spawn.isBoss === 'mid' ? MID_BOSS : FINAL_BOSS;
+          world.addEntity(createBoss(bossDef, x, -40, this.stage));
+        } else {
           const def = ENEMY_DEFS[timer.spawn.enemyType];
           if (def) {
             world.addEntity(createEnemy(def, x, -20, this.stage));

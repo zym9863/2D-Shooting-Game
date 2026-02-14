@@ -20,6 +20,7 @@ import { WaveSystem } from '@/systems/WaveSystem';
 import { ParticleSystem } from '@/systems/ParticleSystem';
 import { BackgroundSystem } from '@/systems/BackgroundSystem';
 import { HudSystem } from '@/systems/HudSystem';
+import { BossPhaseSystem } from '@/systems/BossPhaseSystem';
 import { createPlayer } from '@/prefabs/createPlayer';
 import { GameOverScene } from './GameOverScene';
 
@@ -66,6 +67,12 @@ export class GameScene implements Scene {
     world.addSystem(new BulletSystem());
     world.addSystem(new RenderSystem());
     world.addSystem(hudSystem);
+
+    const bossPhaseSystem = new BossPhaseSystem();
+    bossPhaseSystem.onPhaseChange = (_phase: number) => {
+      particleSystem.emit(CONFIG.GAME_WIDTH / 2, 100, 0xffffff, 30);
+    };
+    world.addSystem(bossPhaseSystem);
 
     // Callbacks
     hudSystem.setLives(this.lives);
